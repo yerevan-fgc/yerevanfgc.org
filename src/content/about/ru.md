@@ -2,6 +2,6 @@
 locale: "ru"
 ---
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+We play fighting games and gather for monthly meetups. These meetups are open-play sessions, where people play whichever game they like - from Street Fighter and Tekken to some pretty niche titles (we have like 4 people playing Skullgirls? It's crazy)
 
-Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit.
+Whatever fighting game you're into, or even if you're only fighting-game-curious for now, come hang out and play some sets. Everyone's welcome!

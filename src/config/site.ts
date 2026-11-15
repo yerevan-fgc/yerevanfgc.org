@@ -26,7 +26,7 @@ export const site = {
   },
   analytics: { enabled: false, measurementId: null as string | null },
   // Turn on only after real copy and metadata have been reviewed.
-  published: { en: false, hy: false, ru: false } satisfies Record<
+  published: { en: true, hy: true, ru: true } satisfies Record<
     Locale,
     boolean
   >,

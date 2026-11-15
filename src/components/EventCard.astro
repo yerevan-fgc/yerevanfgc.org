@@ -24,8 +24,7 @@ const showDetails = published || (!!event?.data.draft && !site.published[locale]
     </dl>
     {published && event?.data.announcementUrl && <Link class="event-link" href={event.data.announcementUrl}>{t.announcement}</Link>}
   </div>
-  {(site.twitterUrl || site.discordUrl) && <div class="event-bottom">
-    {site.twitterUrl && <Link class="event-link" href={site.twitterUrl}>{t.twitter}</Link>}
+  {site.discordUrl && <div class="event-bottom">
     {site.discordUrl && <Link class="event-link" href={site.discordUrl}>{t.discord}</Link>}
   </div>}
 </section>

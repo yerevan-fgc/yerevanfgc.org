@@ -2,7 +2,7 @@
 locale: "en"
 title: "Sed do eiusmod tempor"
 date: "2026-11-10"
-draft: true
+draft: false
 ---
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit.

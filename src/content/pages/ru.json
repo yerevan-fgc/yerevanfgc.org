@@ -4,24 +4,29 @@
   "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
   "faq": [
     {
-      "id": "first-visit",
-      "question": "Lorem ipsum dolor sit amet?",
-      "answer": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
-    },
-    {
-      "id": "equipment",
-      "question": "Consectetur adipiscing elit?",
-      "answer": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+      "id": "cost",
+      "question": "Is there an entry fee for a meetup?",
+      "answer": "GameHub is a computer club with a hourly fee (around 500 ֏ per hour)"
     },
     {
       "id": "experience",
-      "question": "Ut enim ad minim veniam?",
-      "answer": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+      "question": "What if I've never played fighting games before?",
+      "answer": "Show up anyway. The community will help you to learn"
     },
     {
-      "id": "cost",
-      "question": "Quis nostrud exercitation?",
-      "answer": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+      "id": "platform",
+      "question": "On what platform do you play?",
+      "answer": "PC / Steam"
+    },
+    {
+      "id": "games",
+      "question": "What games are available?",
+      "answer": "Pretty much everything you'd want. We have dozens of fighting games across our Steam accounts. Or you can sign in with your own Steam account and bring your own game"
+    },
+    {
+      "id": "equipment",
+      "question": "Do I need to bring my own controller?",
+      "answer": "Preferably. GameHub could provide a Dual Sense, but I wouldn't rely on it. We also have spare controllers at home, so contact us in advance, if you don't have one"
     }
   ]
 }

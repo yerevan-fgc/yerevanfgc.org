@@ -59,6 +59,7 @@ const eventSchema = event && !event.data.draft && eventDates && site.venue.name 
         </section>
         <StageSelect locale={locale} />
       </aside>
+      <div class="content-column">
       <main id="main" class="main-column" tabindex="-1">
         <section class="introduction" id="about" aria-labelledby="intro-heading">
           <h1 id="intro-heading">{t.about}</h1>
@@ -80,6 +81,10 @@ const eventSchema = event && !event.data.draft && eventDates && site.venue.name 
           {site.venue.mapEmbedUrl ? <iframe title={t.map} src={site.venue.mapEmbedUrl} loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe> : <p class="map-placeholder">{t.map} — {t.pending}</p>}
         </section>
       </main>
+    <footer class="site-footer">
+      {badges.length > 0 && <nav class="badge-links" aria-label={t.siteLinks}>{badges.map(badge => <Link href={badge.href}>{badge.label[locale]}</Link>)}</nav>}
+      <Link href={localePath(locale)}>© 2026 Yerevan FGC</Link><Link href="#top" data-back-top aria-label={t.home}>↑</Link></footer>
+      </div>
       <aside class="right-rail">
         <EventCard locale={locale} event={event} />
         <section class="games-section" id="games" aria-labelledby="games-heading">
@@ -94,9 +99,7 @@ const eventSchema = event && !event.data.draft && eventDates && site.venue.name 
         <GifOfWeek locale={locale} />
       </aside>
     </div>
-    <footer class="site-footer">
-      {badges.length > 0 && <nav class="badge-links" aria-label={t.siteLinks}>{badges.map(badge => <Link href={badge.href}>{badge.label[locale]}</Link>)}</nav>}
-      <Link href={localePath(locale)}>© 2026 Yerevan FGC</Link><Link href="#top" data-back-top aria-label={t.home}>↑</Link></footer>
+
   </div>
 </Layout>
 <script>

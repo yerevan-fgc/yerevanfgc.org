@@ -50,7 +50,7 @@ section { scroll-margin-top: 10px; }
 .skip-link:focus { top: 12px; }
 /* Transparent wrapper retains the detached three-column layout. */
 .site-shell { display: grid; grid-template-columns: var(--left-width) minmax(0, 1fr) var(--right-width); column-gap: var(--space); width: min(1080px, calc(100% - 40px)); margin: 20px auto; }
-.masthead, .site-footer { grid-column: 2; min-width: 0; }
+.masthead { grid-column: 2; min-width: 0; }
 .masthead { margin-bottom: 12px; padding: 8px 10px 6px; background: var(--paper); border: 1px solid var(--edge-light); }
 .site-title, .site-title:visited { color: var(--ink); font-size: 21px; font-weight: 700; text-decoration: none; }
 .site-title { display: inline-block; max-width: 100%; }
@@ -61,7 +61,7 @@ section { scroll-margin-top: 10px; }
 .languages a[aria-current] { color: var(--ink); font-weight: 700; text-decoration: none; }
 .preview-bar { margin: 0; padding-top: 3px; color: var(--muted); font-size: 12px; }
 .board { grid-column: 1 / -1; display: grid; grid-template-columns: var(--left-width) minmax(0, 1fr) var(--right-width); gap: var(--space); align-items: start; }
-.left-rail, .main-column, .right-rail { min-width: 0; }
+.left-rail, .content-column, .main-column, .right-rail { min-width: 0; }
 .left-rail { position: sticky; top: 10px; align-self: start; margin-top: 0; max-height: calc(100dvh - 20px); overflow-y: auto; }
 .right-rail { margin-top: 0; }
 /* Navigation is a list of hyperlinks; the social block is a separate footnote. */
@@ -154,7 +154,7 @@ img.pixel-art { image-rendering: pixelated; }
 }
 @media (max-width: 820px) {
   .site-shell { grid-template-columns: minmax(0, 1fr) var(--right-width); }
-  .masthead, .site-footer { grid-column: 1; }
+  .masthead { grid-column: 1; }
   .board { grid-template-columns: minmax(0, 1fr) var(--right-width); row-gap: 9px; }
   .left-rail { position: static; grid-column: 1 / -1; margin-top: 0; max-height: none; overflow-y: visible; }
   .navigation ul, .stage-select ul { display: flex; flex-wrap: wrap; gap: 2px 15px; }
@@ -182,7 +182,8 @@ img.pixel-art { image-rendering: pixelated; }
   .navigation li, .stage-select li { min-width: 0; margin: 0; }
   .navigation a, .stage-choice { padding-block: 2px; font-size: 14px; line-height: 1.5; }
   .event-notice { order: 1; width: 100%; }
-  .main-column { order: 2; width: 100%; padding-inline: 12px; }
+  .content-column { order: 2; width: 100%; }
+  .main-column { padding-inline: 12px; }
   .stage-select { order: 3; width: 100%; margin-top: 0; }
   .games-section { order: 4; width: 100%; margin-top: 0; }
   .gif-week { order: 5; width: 100%; margin-top: 0; }
