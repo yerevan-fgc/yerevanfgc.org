@@ -30,6 +30,7 @@ const en = {
   map: "Venue map",
   ongoing: "Happening now",
   footer: "Yerevan · Armenia",
+  disclaimer: "Game names and artwork belong to their respective owners. We're just a group of local players — not affiliated with any game publisher.",
 };
 type UI = Record<keyof typeof en, string>;
 export const ui: Record<Locale, UI> = {
@@ -64,6 +65,7 @@ export const ui: Record<Locale, UI> = {
     map: "Վայրի քարտեզը",
     ongoing: "Ընթանում է հիմա",
     footer: "Երևան · Հայաստան",
+    disclaimer: "Խաղերի անվանումները և պատկերները պատկանում են իրենց սեփականատերերին։ Մենք պարզապես տեղացի խաղացողների համայնք ենք և կապված չենք որևէ խաղի հրատարակչի հետ։",
   },
   ru: {
     stageSelect: "Выбор арены",
@@ -95,5 +97,6 @@ export const ui: Record<Locale, UI> = {
     map: "Карта места встречи",
     ongoing: "Уже идёт",
     footer: "Ереван · Армения",
+    disclaimer: "Названия игр и изображения принадлежат их правообладателям. Мы просто местное сообщество игроков и не связаны с издателями игр.",
   },
 };

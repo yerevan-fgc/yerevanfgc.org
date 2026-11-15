@@ -83,7 +83,8 @@ const eventSchema = event && !event.data.draft && eventDates && site.venue.name 
       </main>
     <footer class="site-footer">
       {badges.length > 0 && <nav class="badge-links" aria-label={t.siteLinks}>{badges.map(badge => <Link href={badge.href}>{badge.label[locale]}</Link>)}</nav>}
-      <Link href={localePath(locale)}>© 2026 Yerevan FGC</Link><Link href="#top" data-back-top aria-label={t.home}>↑</Link></footer>
+      <Link href={localePath(locale)}>© 2026 Yerevan FGC</Link><Link href="#top" data-back-top aria-label={t.home}>↑</Link>
+      <p class="footer-note">{t.disclaimer}</p></footer>
       </div>
       <aside class="right-rail">
         <EventCard locale={locale} event={event} />
