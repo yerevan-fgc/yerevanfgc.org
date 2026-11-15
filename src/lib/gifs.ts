@@ -9,11 +9,14 @@ export function gifWeekKey(date = new Date(), timeZone = 'Asia/Yerevan'): string
   return day.toISOString().slice(0, 10);
 }
 
-/** Same catalogue + local week = same selection on every refresh and device. */
+// Change this value to reshuffle the weekly selections for everyone.
+const rotationSeed = 'yerevan-fgc-rotation-2';
+
+/** Same catalogue + rotation seed + local week = same selection on every refresh and device. */
 export function pickGif<T>(gifs: readonly T[], date = new Date(), timeZone = 'Asia/Yerevan'): T | undefined {
   if (!gifs.length) return undefined;
   let seed = 2166136261;
-  for (const character of gifWeekKey(date, timeZone)) {
+  for (const character of `${rotationSeed}:${gifWeekKey(date, timeZone)}`) {
     seed = Math.imul(seed ^ character.charCodeAt(0), 16777619);
   }
   return gifs[(seed >>> 0) % gifs.length];
