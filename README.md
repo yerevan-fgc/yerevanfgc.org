@@ -4,7 +4,7 @@ Static Astro community bulletin, with English (`/`), Armenian (`/hy/`), and Russ
 
 ## Development
 
-Use Node 22.23.4+ and `npm ci`.
+Use Node 24 (also used by CI, specified in `.nvmrc`) and `npm ci`. With nvm installed, run `nvm use` first.
 
 ```sh
 npm run dev -- --background
@@ -21,7 +21,15 @@ npm run build
 npm test
 ```
 
-Tests inspect the generated `dist` pages, so build before testing. Deploy `dist/` using your existing static hosting pipeline. This project does not configure or publish to a hosting service.
+Tests inspect the generated `dist` pages, so build before testing.
+
+## GitHub Pages deployment
+
+`.github/workflows/astro.yml` installs locked dependencies with `npm ci`, checks types, builds, and tests the generated pages. Pull requests to `main` run validation only; pushes to `main` and manual runs deploy `dist/` after validation passes.
+
+In repository **Settings → Pages**, select **GitHub Actions** as the source and configure **yerevanfgc.org** as the custom domain, with its DNS pointing to GitHub Pages. The build uses the canonical URL in `src/config/site.ts` and the domain root; it does not override `site` or `base` with GitHub's repository URL. A default `github.io/repository/` deployment would require changes to root-relative asset and locale links throughout the site.
+
+Deployment does not change `site.published`: locales marked `false` remain previews with `noindex`. Update those flags only when their content is ready for search engines.
 
 ## Editing guide
 
