@@ -1,0 +1,114 @@
+---
+import Link from './Link.astro';
+import { getCollection, getEntry, render } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import EventCard from './EventCard.astro';
+import StageSelect from './StageSelect.astro';
+import NewsEntry from './NewsEntry.astro';
+import GifOfWeek from './GifOfWeek.astro';
+import { site, locales, localePath, type Locale } from '../config/site';
+import { languageNames, ui } from '../i18n/ui';
+import { resolveFeatured, eventTimestamps } from '../lib/events';
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const t = ui[locale];
+const page = await getEntry('pages', locale);
+if (!page) throw new Error(`Missing page content for ${locale}`);
+const copy = page.data;
+const about = await getEntry('about', locale);
+if (!about) throw new Error(`Missing About us content for ${locale}`);
+const { Content: AboutContent } = await render(about);
+const event = resolveFeatured(await getCollection('events'), site.featuredEventId, site.venue.id);
+const games = (await getCollection('games')).sort((a,b) => a.data.order - b.data.order);
+const news = (await getCollection('news')).filter(entry => entry.data.locale === locale && (!entry.data.draft || !site.published[locale])).sort((a, b) => b.data.date.localeCompare(a.data.date)).slice(0, 3);
+const community = await getEntry('community', 'home');
+// Omit links to the news section when there are no published entries.
+const badges = community?.data.badges.filter(link => link.href !== '#news' || news.length > 0) ?? [];
+const nav = [['about', t.about], ...(news.length ? [['news', t.news]] : []), ['next-event', t.nextEvent], ['games', t.games], ['faq', t.faq], ['location', t.location]];
+const eventDates = event ? eventTimestamps(event.data, site.timezone) : undefined;
+const eventSchema = event && !event.data.draft && eventDates && site.venue.name && site.venue.address ? {
+  '@context': 'https://schema.org', '@type': 'Event', name: event.data.translations[locale].title,
+  description: event.data.translations[locale].description ?? event.data.translations[locale].tagline,
+  startDate: eventDates.start, endDate: eventDates.end,
+  eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+  location: { '@type': 'Place', name: site.venue.name, address: site.venue.address },
+  url: new URL(localePath(locale) + '#next-event', site.url).href,
+  ...(event.data.poster ? { image: new URL(event.data.poster, site.url).href } : {}),
+} : undefined;
+---
+<Layout locale={locale} title={copy.title} description={copy.description} eventSchema={eventSchema}>
+  <div class="site-shell">
+    <header class="masthead">
+      <Link class="site-title" href={localePath(locale)} aria-label={`${site.name} · ${t.home}`}>{site.logo ? <img class="site-logo" src={site.logo.src} alt={site.name} width={site.logo.width} height={site.logo.height} /> : site.name}</Link>
+      <p class="site-location">{t.tagline}</p>
+      <nav class="languages" aria-label={t.languages}>
+        {locales.map(l => <Link href={localePath(l)} lang={l} hreflang={l} aria-current={l === locale ? 'page' : undefined} data-language-link>{languageNames[l]}</Link>)}
+      </nav>
+      {!site.published[locale] && <p class="preview-bar">{t.preview}</p>}
+    </header>
+    <div class="board">
+      <aside class="left-rail">
+        <nav class="navigation" aria-label={t.navigation}>
+          <h2>{t.navigation}</h2>
+          <ul>{nav.map(([id,label]) => <li><Link href={`#${id}`}>{label}</Link></li>)}</ul>
+        </nav>
+        <section class="community-links" aria-labelledby="updates-heading">
+          <h2 id="updates-heading">{t.updates}</h2>
+          {site.twitterUrl ? <p><Link class="social-link" href={site.twitterUrl}><img src="/ui/twitter.png" alt="" width="512" height="512" /><span>{t.twitter}</span></Link></p> : <p class="pending-label">{t.pending}</p>}
+          {site.discordUrl && <p><Link href={site.discordUrl}>{t.discord}</Link></p>}
+        </section>
+        <StageSelect locale={locale} />
+      </aside>
+      <main id="main" class="main-column" tabindex="-1">
+        <section class="introduction" id="about" aria-labelledby="intro-heading">
+          <h1 id="intro-heading">{t.about}</h1>
+          <div class="markdown-body"><AboutContent /></div>
+        </section>
+        {news.length > 0 && <section class="news-section" id="news" aria-labelledby="news-heading">
+          <h2 id="news-heading">{t.news}</h2>
+          {news.map(entry => <NewsEntry entry={entry} />)}
+        </section>}
+        <section class="faq-section" id="faq" aria-labelledby="faq-heading">
+          <h2 id="faq-heading">{t.faq}</h2>
+          {copy.faq.map(item => <div class="faq-item" id={`faq-${item.id}`}><h3>{item.question}</h3><p>{item.answer}</p></div>)}
+        </section>
+        <section class="location-section" id="location" aria-labelledby="location-heading">
+          <h2 id="location-heading">{t.location}</h2>
+          <p>{site.venue.name ?? t.pending}</p>
+          {site.venue.address && <address>{site.venue.address}</address>}
+          {site.venue.directionsUrl && <p><Link href={site.venue.directionsUrl}>{t.directions}</Link></p>}
+          {site.venue.mapEmbedUrl ? <iframe title={t.map} src={site.venue.mapEmbedUrl} loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe> : <p class="map-placeholder">{t.map} — {t.pending}</p>}
+        </section>
+      </main>
+      <aside class="right-rail">
+        <EventCard locale={locale} event={event} />
+        <section class="games-section" id="games" aria-labelledby="games-heading">
+          <h2 id="games-heading">{t.games}</h2>
+          <ul class="games-list">{games.map(({ data }) => {
+            const Tag = data.link ? Link : 'span';
+            return <li><Tag class="game-entry" href={data.link ?? undefined}>
+              {data.logo ? <img class="game-logo" src={data.logo} alt={data.name} width="228" height="124" loading="lazy" /> : data.name}
+            </Tag></li>;
+          })}</ul>
+        </section>
+        <GifOfWeek locale={locale} />
+      </aside>
+    </div>
+    <footer class="site-footer">
+      {badges.length > 0 && <nav class="badge-links" aria-label={t.siteLinks}>{badges.map(badge => <Link href={badge.href}>{badge.label[locale]}</Link>)}</nav>}
+      <Link href={localePath(locale)}>© 2026 Yerevan FGC</Link><Link href="#top" data-back-top aria-label={t.home}>↑</Link></footer>
+  </div>
+</Layout>
+<script>
+  // Keep anchor destinations below the sticky mobile navigation, including translated labels.
+  const navigation = document.querySelector<HTMLElement>('.navigation');
+  if (navigation) {
+    const singleColumn = matchMedia('(max-width: 640px)');
+    const setNavigationOffset = () => document.documentElement.style.setProperty(
+      '--navigation-offset', singleColumn.matches ? `${navigation.getBoundingClientRect().height + 10}px` : '10px',
+    );
+    new ResizeObserver(setNavigationOffset).observe(navigation);
+    singleColumn.addEventListener('change', setNavigationOffset);
+    setNavigationOffset();
+  }
+</script>

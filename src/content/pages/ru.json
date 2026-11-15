@@ -1,0 +1,27 @@
+{
+  "locale": "ru",
+  "title": "Yerevan FGC",
+  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "faq": [
+    {
+      "id": "first-visit",
+      "question": "Lorem ipsum dolor sit amet?",
+      "answer": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+    },
+    {
+      "id": "equipment",
+      "question": "Consectetur adipiscing elit?",
+      "answer": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+    },
+    {
+      "id": "experience",
+      "question": "Ut enim ad minim veniam?",
+      "answer": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+    },
+    {
+      "id": "cost",
+      "question": "Quis nostrud exercitation?",
+      "answer": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+---
+import Link from './Link.astro';
+import { getCollection } from 'astro:content';
+import { site, type Locale } from '../config/site';
+import { ui } from '../i18n/ui';
+import { gifDimensions } from '../lib/gif-assets';
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const t = ui[locale];
+const entries = (await getCollection('gifs')).sort((a, b) => a.id.localeCompare(b.id));
+const gifs = await Promise.all(entries.map(async ({ data }) => ({ ...data, ...await gifDimensions(data.file) })));
+const first = gifs[0];
+const banner = first ? await gifDimensions('/gif/tfg.gif') : undefined;
+---
+{first && banner && <section class="gif-week" aria-labelledby="gif-week-heading" data-gif-week data-site-url={site.url} data-timezone={site.timezone} data-gifs={JSON.stringify(gifs)} data-pause={t.pauseGif} data-play={t.playGif}>
+  <h2 id="gif-week-heading">{t.gifOfWeek}<button class="gif-motion-toggle" type="button" data-gif-motion hidden>{t.pauseGif}</button></h2>
+  <div class="gif-stage"><img data-selected-gif src={first.file} alt={first.name} width={first.width} height={first.height} /></div>
+  <p class="gif-credit">{t.providedBy}</p>
+  <Link class="gif-provider" data-gif-source href={first.source}><img src="/gif/tfg.gif" alt="The Fighters Generation" width={banner.width} height={banner.height} /></Link>
+</section>}
+<script>
+  import { pickGif } from '../lib/gifs';
+  import { externalLinkAttributes } from '../lib/links';
+  interface Gif { file: string; name: string; source: string; width: number; height: number }
+  document.querySelectorAll<HTMLElement>('[data-gif-week]').forEach(block => {
+    const selected = pickGif<Gif>(JSON.parse(block.dataset.gifs ?? '[]'), new Date(), block.dataset.timezone);
+    const image = block.querySelector<HTMLImageElement>('[data-selected-gif]');
+    const source = block.querySelector<HTMLAnchorElement>('[data-gif-source]');
+    const toggle = block.querySelector<HTMLButtonElement>('[data-gif-motion]');
+    if (!selected || !image || !source || !toggle) return;
+    image.width = selected.width;
+    image.height = selected.height;
+    image.alt = selected.name;
+    image.src = selected.file;
+    source.href = selected.source;
+    const external = externalLinkAttributes(selected.source, block.dataset.siteUrl!);
+    if (external.target) {
+      source.target = external.target;
+      source.rel = external.rel;
+    } else {
+      source.removeAttribute('target');
+      source.removeAttribute('rel');
+    }
+
+    // One small motion control covers the selected GIF and the animated credit banner.
+    const motion = matchMedia('(prefers-reduced-motion: reduce)');
+    let paused = motion.matches;
+    const images = [...block.querySelectorAll<HTMLImageElement>('img')];
+    const freeze = (img: HTMLImageElement) => {
+      if (!paused || !img.complete || !img.naturalWidth || img.src.startsWith('data:')) return;
+      const canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      const context = canvas.getContext('2d');
+      if (!context) return;
+      context.drawImage(img, 0, 0);
+      img.src = canvas.toDataURL();
+    };
+    images.forEach(img => {
+      img.dataset.animation = img.src;
+      img.addEventListener('load', () => freeze(img));
+      freeze(img);
+    });
+    const update = () => {
+      toggle.textContent = paused ? block.dataset.play! : block.dataset.pause!;
+      images.forEach(img => paused ? freeze(img) : img.src = img.dataset.animation!);
+    };
+    toggle.hidden = false;
+    toggle.addEventListener('click', () => { paused = !paused; update(); });
+    motion.addEventListener('change', () => { paused = motion.matches; update(); });
+    update();
+  });
+</script>

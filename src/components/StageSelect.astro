@@ -1,0 +1,39 @@
+---
+import { getCollection } from 'astro:content';
+import { site, type Locale } from '../config/site';
+import { ui } from '../i18n/ui';
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const backgrounds = (await getCollection('backgrounds')).sort((a, b) => a.data.name.localeCompare(b.data.name));
+---
+<section class="stage-select" aria-labelledby="stage-heading" data-stage-select data-default={site.defaultBackground}>
+  <h2 id="stage-heading">{ui[locale].stageSelect}</h2>
+  <ul>{backgrounds.map(({ data }) => <li><button class="stage-choice" type="button" data-background={data.link} aria-pressed={data.link === site.defaultBackground}>{data.name}</button></li>)}</ul>
+</section>
+<script>
+  import { backgroundStorageKey, resolveBackground } from '../lib/backgrounds';
+  document.querySelectorAll<HTMLElement>('[data-stage-select]').forEach(picker => {
+    const buttons = [...picker.querySelectorAll<HTMLButtonElement>('[data-background]')];
+    const choices = buttons.map(button => button.dataset.background!);
+    const fallback = picker.dataset.default!;
+    const apply = (link: string) => {
+      document.documentElement.style.setProperty('--background-image', `url(${JSON.stringify(link)})`);
+      buttons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.background === link)));
+    };
+    const restore = () => {
+      let saved = null;
+      try { saved = localStorage.getItem(backgroundStorageKey); } catch {}
+      apply(resolveBackground(saved, choices, fallback));
+    };
+    restore();
+    buttons.forEach(button => button.addEventListener('click', () => {
+      const link = button.dataset.background!;
+      apply(link);
+      try { localStorage.setItem(backgroundStorageKey, link); } catch {}
+    }));
+    window.addEventListener('pageshow', restore);
+    window.addEventListener('storage', event => {
+      if (event.key === backgroundStorageKey || event.key === null) restore();
+    });
+  });
+</script>

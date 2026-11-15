@@ -1,0 +1,28 @@
+{
+  "draft": false,
+  "venueId": "main",
+  "translations": {
+    "en": {
+      "title": "Saturday Mash #69",
+      "tagline": "Celebrating HUGE Avatar patch and SF4 revival!",
+      "posterAlt": "Saturday Mash #69"
+    },
+    "hy": {
+      "title": "Saturday Mash #69",
+      "tagline": "Celebrating HUGE Avatar patch and SF4 revival!",
+      "posterAlt": "Saturday Mash #69"
+    },
+    "ru": {
+      "title": "Saturday Mash #69",
+      "tagline": "Celebrating HUGE Avatar patch and SF4 revival!",
+      "posterAlt": "Saturday Mash #69"
+    }
+  },
+  "poster": "/events/avatar-poster.webp",
+  "posterSize": {
+    "width": 400,
+    "height": 560
+  },
+  "date": "2026-11-07",
+  "time": "15:00 – 20:00"
+}

@@ -1,0 +1,16 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import { ui } from '../i18n/ui';
+interface Props { entry: CollectionEntry<'news'> }
+const { entry } = Astro.props;
+const { image, locale, date, draft, title } = entry.data;
+const { Content } = await render(entry);
+const dateLabel = new Intl.DateTimeFormat(locale, { dateStyle: 'long', timeZone: 'UTC' }).format(new Date(`${date}T12:00:00Z`));
+// The folder is the shared identity; language filenames do not alter section anchors.
+const slug = entry.id.slice(0, entry.id.lastIndexOf('/'));
+---
+<article class:list={['news-entry', image ? `news-image-${image.placement}` : 'news-text-only']} id={`news-${slug}`}>
+  <header><time datetime={date}>{dateLabel}</time>{draft && <small> · {ui[locale].preview}</small>}</header>
+  <h3>{title}</h3>
+  <div class="news-body markdown-body"><Content /></div>
+</article>
