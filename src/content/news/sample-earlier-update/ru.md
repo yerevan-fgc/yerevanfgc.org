@@ -2,7 +2,7 @@
 locale: "ru"
 title: "Consectetur adipiscing elit"
 date: "2026-11-07"
-draft: false
+draft: true
 image:
   src: "/placeholders/news-wide.png"
   width: 960

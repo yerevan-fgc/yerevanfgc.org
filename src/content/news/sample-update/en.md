@@ -2,7 +2,7 @@
 locale: "en"
 title: "Lorem ipsum dolor sit amet"
 date: "2026-11-14"
-draft: false
+draft: true
 image:
   src: "/placeholders/news-thumbnail.png"
   width: 320

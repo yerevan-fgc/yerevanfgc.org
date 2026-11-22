@@ -11,8 +11,7 @@ export const site = {
   timezone: "Asia/Yerevan",
   twitterUrl: "https://x.com/YerevanFGC",
   discordUrl: null as string | null,
-  featuredEventId: "sample-meetup" as string | null,
-  defaultBackground: "/backgrounds/esaka.webp",
+  defaultBackground: "/backgrounds/garou.webp",
   venue: {
     id: "main",
     name: "Game Hub Club" as string | null,

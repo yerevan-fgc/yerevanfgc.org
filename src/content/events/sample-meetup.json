@@ -1,21 +1,18 @@
 {
-  "draft": false,
+  "draft": true,
   "venueId": "main",
   "translations": {
     "en": {
       "title": "Saturday Mash #69",
-      "tagline": "Celebrating HUGE Avatar patch and SF4 revival!",
-      "posterAlt": "Saturday Mash #69"
+      "tagline": "Celebrating HUGE Avatar patch and SF4 revival!"
     },
     "hy": {
       "title": "Saturday Mash #69",
-      "tagline": "Celebrating HUGE Avatar patch and SF4 revival!",
-      "posterAlt": "Saturday Mash #69"
+      "tagline": "Celebrating HUGE Avatar patch and SF4 revival!"
     },
     "ru": {
       "title": "Saturday Mash #69",
-      "tagline": "Celebrating HUGE Avatar patch and SF4 revival!",
-      "posterAlt": "Saturday Mash #69"
+      "tagline": "Celebrating HUGE Avatar patch and SF4 revival!"
     }
   },
   "poster": "/events/avatar-poster.webp",

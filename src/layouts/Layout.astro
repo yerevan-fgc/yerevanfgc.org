@@ -8,6 +8,7 @@ import { backgroundStorageKey } from '../lib/backgrounds';
 interface Props { locale: Locale; title: string; description: string; eventSchema?: Record<string, unknown> }
 const { locale, title, description, eventSchema } = Astro.props;
 const published = site.published[locale];
+const twitterUsername = site.twitterUrl ? new URL(site.twitterUrl).pathname.split('/').filter(Boolean)[0] : undefined;
 const backgroundLinks = (await getCollection('backgrounds')).map(entry => entry.data.link);
 if (!backgroundLinks.includes(site.defaultBackground)) throw new Error('Default background is missing from the backgrounds collection.');
 const canonical = new URL(localePath(locale), site.url).href;
@@ -40,6 +41,7 @@ if (analyticsId && !/^G-[A-Z0-9]+$/.test(analyticsId)) throw new Error('Invalid 
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta name="twitter:card" content="summary" />
+    {twitterUsername && <meta name="twitter:site" content={`@${twitterUsername}`} />}
     <link rel="stylesheet" href="/fonts/fonts.css" />
     {published && eventSchema && <script type="application/ld+json" set:html={JSON.stringify(eventSchema).replace(/</g, '\\u003c')} />}
     {published && analyticsId && <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${analyticsId}`}></script>}

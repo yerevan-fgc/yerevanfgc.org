@@ -15,11 +15,11 @@ const showDetails = published || (!!event?.data.draft && !site.published[locale]
   <h2 id="event-heading">{t.nextEvent}</h2>
   <div class="event-details">
     <h3 class="event-title">{text?.title ?? 'Lorem ipsum'}</h3>
-    <p class="event-tagline">{text?.tagline ?? 'Dolor sit amet, consectetur adipiscing elit.'}</p>
-    {showDetails && event?.data.poster && <Link class="event-poster-link" href={event.data.poster}><img class="event-poster" src={event.data.poster} alt={text?.posterAlt ?? text?.title} width={event.data.posterSize?.width} height={event.data.posterSize?.height} /></Link>}
+    {text?.tagline && <p class="event-tagline">{text.tagline}</p>}
+    {showDetails && event?.data.poster && <Link class="event-poster-link" href={event.data.poster}><img class="event-poster" src={event.data.poster} alt={text?.title} width={event.data.posterSize?.width} height={event.data.posterSize?.height} /></Link>}
     {published && text?.description && <p>{text.description}</p>}
     <dl class="event-facts">
-      <div><dt>{t.date}</dt><dd>{showDetails && event?.data.date ? <><time datetime={event.data.date}>{formatEventDate(event.data.date, locale)}</time>{event.data.time && <span class="event-time">{event.data.time}</span>}<span class="timezone">{site.timezone}</span></> : '—'}</dd></div>
+      <div><dt>{t.date}</dt><dd>{showDetails && event?.data.date ? <><time datetime={event.data.date}>{formatEventDate(event.data.date, locale)}</time>{event.data.time && <span class="event-time">{event.data.time}</span>}</> : '—'}</dd></div>
       <div><dt>{t.place}</dt><dd>{[site.venue?.name, site.venue?.address].filter(Boolean).join(' · ') || '—'}</dd></div>
     </dl>
     {published && event?.data.announcementUrl && <Link class="event-link" href={event.data.announcementUrl}>{t.announcement}</Link>}

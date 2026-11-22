@@ -1,32 +1,32 @@
 {
   "locale": "ru",
-  "title": "Yerevan FGC",
-  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "title": "Yerevan FGC | Сообщество файтингов в Ереване",
+  "description": "Сообщество файтингов в Ереване. Мы организуем встречи, где можно поиграть в Street Figher, Tekken и тд",
   "faq": [
     {
       "id": "cost",
-      "question": "Is there an entry fee for a meetup?",
-      "answer": "GameHub is a computer club with a hourly fee (around 500 ֏ per hour)"
+      "question": "На встречах нужно за что-то платить?",
+      "answer": "GameHub - это компьютерный клуб с почасовой оплатой (около 1000 ֏ в час)"
     },
     {
       "id": "experience",
-      "question": "What if I've never played fighting games before?",
-      "answer": "Show up anyway. The community will help you to learn"
+      "question": "Что если я никогда не играл(а) в файтинги?",
+      "answer": "Все равно приходи. Помогут и научат"
     },
     {
       "id": "platform",
-      "question": "On what platform do you play?",
-      "answer": "PC / Steam"
+      "question": "На какой платформе играете?",
+      "answer": "ПК / Steam"
     },
     {
       "id": "games",
-      "question": "What games are available?",
-      "answer": "Pretty much everything you'd want. We have dozens of fighting games across our Steam accounts. Or you can sign in with your own Steam account and bring your own game"
+      "question": "Какие есть игры?",
+      "answer": "Все на свете. Десятки тайтлов суммарно, если сложить наши библиотеки Steam. Или можете зайти под своим аккаунтом в Steam и запустить свою игру"
     },
     {
       "id": "equipment",
-      "question": "Do I need to bring my own controller?",
-      "answer": "Preferably. GameHub could provide a Dual Sense, but I wouldn't rely on it. We also have spare controllers at home, so contact us in advance, if you don't have one"
+      "question": "Нужно ли мне приходить с собственным контроллером?",
+      "answer": "Желательно. GameHub может предоставить DualSense, но лучше на это не рассчитывать. Еще у нас есть пара запасных контроллеров (но мы их можем забыть - лучше связаться заранее, если нужно одолжить)"
     }
   ]
 }

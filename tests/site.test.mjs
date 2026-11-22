@@ -64,7 +64,7 @@ test('news entries render newest first and page fragment links resolve', async (
   const entries = await Promise.all(files.map(async file => (await readMarkdown(`src/content/news/${file}`)).data));
   for (const locale of locales) {
     const html = await readFile(`dist${localePath(locale)}index.html`, 'utf8');
-    const expectedDates = entries.filter(entry => entry.locale === locale && (!entry.draft || !site.published[locale])).map(entry => entry.date).sort().reverse().slice(0, 3);
+    const expectedDates = entries.filter(entry => entry.locale === locale && !entry.draft).map(entry => entry.date).sort().reverse().slice(0, 3);
     const articles = [...html.matchAll(/<article\b[^>]*class="[^"]*news-entry[^"]*"[^>]*>[\s\S]*?<\/article>/g)];
     const actualDates = articles.map(([article]) => article.match(/<time datetime="(\d{4}-\d{2}-\d{2})"/)?.[1]);
     assert.deepEqual(actualDates, expectedDates);

@@ -18,9 +18,9 @@ const copy = page.data;
 const about = await getEntry('about', locale);
 if (!about) throw new Error(`Missing About us content for ${locale}`);
 const { Content: AboutContent } = await render(about);
-const event = resolveFeatured(await getCollection('events'), site.featuredEventId, site.venue.id);
+const event = resolveFeatured(await getCollection('events'), site.venue.id, site.timezone);
 const games = (await getCollection('games')).sort((a,b) => a.data.order - b.data.order);
-const news = (await getCollection('news')).filter(entry => entry.data.locale === locale && (!entry.data.draft || !site.published[locale])).sort((a, b) => b.data.date.localeCompare(a.data.date)).slice(0, 3);
+const news = (await getCollection('news')).filter(entry => entry.data.locale === locale && (!entry.data.draft || import.meta.env.DEV)).sort((a, b) => b.data.date.localeCompare(a.data.date)).slice(0, 3);
 const community = await getEntry('community', 'home');
 // Omit links to the news section when there are no published entries.
 const badges = community?.data.badges.filter(link => link.href !== '#news' || news.length > 0) ?? [];

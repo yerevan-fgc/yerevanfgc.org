@@ -12,7 +12,7 @@ const en = {
   about: "About us",
   games: "Games we play",
   faq: "FAQ",
-  location: "Find us",
+  location: "Venue",
   nextEvent: "Next event",
   updates: "Socials",
   twitter: "Follow on Twitter",
@@ -25,12 +25,13 @@ const en = {
   preview: "Content preview",
   languages: "Language",
   skip: "Skip to content",
-  tagline: "Fighting Game Community of Yerevan, Armenia",
+  tagline: "Fighting Game Community in Yerevan, Armenia",
   home: "Home",
   map: "Venue map",
   ongoing: "Happening now",
   footer: "Yerevan · Armenia",
-  disclaimer: "Game names and artwork belong to their respective owners. We're just a group of local players — not affiliated with any game publisher.",
+  disclaimer:
+    "Game names and artwork belong to their respective owners. We're just a group of local players — not affiliated with any game publisher.",
 };
 type UI = Record<keyof typeof en, string>;
 export const ui: Record<Locale, UI> = {
@@ -47,7 +48,7 @@ export const ui: Record<Locale, UI> = {
     about: "Մեր մասին",
     games: "Մեր խաղերը",
     faq: "Հաճախ տրվող հարցեր",
-    location: "Ինչպես գտնել մեզ",
+    location: "Վայր",
     nextEvent: "Հաջորդ միջոցառումը",
     updates: "Սոցցանցեր",
     twitter: "Հետևել Twitter-ում",
@@ -65,7 +66,8 @@ export const ui: Record<Locale, UI> = {
     map: "Վայրի քարտեզը",
     ongoing: "Ընթանում է հիմա",
     footer: "Երևան · Հայաստան",
-    disclaimer: "Խաղերի անվանումները և պատկերները պատկանում են իրենց սեփականատերերին։ Մենք պարզապես տեղական խաղացողների խումբ ենք և կապված չենք որևէ խաղերի հրապարակիչների հետ։",
+    disclaimer:
+      "Խաղերի անվանումները և պատկերները պատկանում են իրենց սեփականատերերին։ Մենք պարզապես տեղական խաղացողների խումբ ենք և կապված չենք որևէ խաղերի հրապարակիչների հետ։",
   },
   ru: {
     stageSelect: "Выбор арены",
@@ -79,8 +81,8 @@ export const ui: Record<Locale, UI> = {
     about: "О нас",
     games: "Во что играем",
     faq: "Вопросы и ответы",
-    location: "Как нас найти",
-    nextEvent: "Следующее событие",
+    location: "Место встречи",
+    nextEvent: "Ближайшая встреча",
     updates: "Соцсети",
     twitter: "Подписаться в Twitter",
     discord: "Наш Discord",
@@ -97,6 +99,7 @@ export const ui: Record<Locale, UI> = {
     map: "Карта места встречи",
     ongoing: "Уже идёт",
     footer: "Ереван · Армения",
-    disclaimer: "Названия игр и изображения принадлежат их правообладателям. Мы просто местное сообщество игроков и не связаны с издателями игр.",
+    disclaimer:
+      "Названия игр и изображения принадлежат их правообладателям. Мы просто местное сообщество игроков и не связаны с издателями игр.",
   },
 };

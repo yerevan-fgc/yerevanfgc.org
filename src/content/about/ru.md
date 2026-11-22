@@ -2,6 +2,8 @@
 locale: "ru"
 ---
 
-We play fighting games and gather for monthly meetups. These meetups are open-play sessions, where people play whichever game they like - from Street Fighter and Tekken to some pretty niche titles (we have like 4 people playing Skullgirls? It's crazy)
+Мы играем в файтинги и собираемся на ежемесячные оффлайновые встречи. Встречи - без регламента, это не турнир - просто садимся и играем в какие хотим файтинги. Начиная со Street Fighter и Tekken и заканчивая самыми нишевыми тайтлами (у нас 4 человека играют в Skullgirls? С ума сойти).
 
-Whatever fighting game you're into, or even if you're only fighting-game-curious for now, come hang out and play some sets. Everyone's welcome!
+В какой бы файтинг вы не играли, или даже если вы пока только интересуетесь, приходите к нам катать сеты - всем будем рады.
+
+Если есть какие-то вопросы, пишите нам в [Twitter](https://x.com/YerevanFGC).

@@ -1,0 +1,25 @@
+{
+  "draft": false,
+  "venueId": "main",
+  "translations": {
+    "en": {
+      "title": "Saturday Mash #70",
+      "tagline": ""
+    },
+    "hy": {
+      "title": "Saturday Mash #70",
+      "tagline": ""
+    },
+    "ru": {
+      "title": "Saturday Mash #70",
+      "tagline": ""
+    }
+  },
+  "poster": "/events/avatar-poster.webp",
+  "posterSize": {
+    "width": 400,
+    "height": 560
+  },
+  "date": "2026-12-05",
+  "time": "15:00 – 20:00"
+}

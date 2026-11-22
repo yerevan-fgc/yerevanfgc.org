@@ -4,7 +4,9 @@ import { site, type Locale } from '../config/site';
 import { ui } from '../i18n/ui';
 interface Props { locale: Locale }
 const { locale } = Astro.props;
-const backgrounds = (await getCollection('backgrounds')).sort((a, b) => a.data.name.localeCompare(b.data.name));
+const backgrounds = (await getCollection('backgrounds')).sort((a, b) =>
+  Number(b.data.link === site.defaultBackground) - Number(a.data.link === site.defaultBackground)
+  || a.data.name.localeCompare(b.data.name));
 ---
 <section class="stage-select" aria-labelledby="stage-heading" data-stage-select data-default={site.defaultBackground}>
   <h2 id="stage-heading">{ui[locale].stageSelect}</h2>

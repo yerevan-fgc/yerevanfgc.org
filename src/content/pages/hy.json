@@ -1,12 +1,12 @@
 {
   "locale": "hy",
-  "title": "Yerevan FGC",
-  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "title": "Yerevan FGC | Մարտախաղերի համայնք Երևանում",
+  "description": "Fighting game community in Yerevan, Armenia. We organize meetups for Street Fighter, Tekken, etc",
   "faq": [
     {
       "id": "cost",
       "question": "Is there an entry fee for a meetup?",
-      "answer": "GameHub is a computer club with a hourly fee (around 500 ֏ per hour)"
+      "answer": "GameHub is a computer club with a hourly fee (around 1000 ֏ per hour)"
     },
     {
       "id": "experience",

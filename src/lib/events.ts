@@ -32,14 +32,23 @@ export function formatEventDate(date: string, locale: string) {
   return `${value('weekday')}, ${value('day')} ${value('month')}`;
 }
 
-// Featuring is an editorial choice: dates never automatically unfeature an event.
+// The selected published event stays visible when used as the past-event fallback.
 export function eventState(event: EventTiming | undefined) {
   return event && !event.draft ? 'featured' : 'pending';
 }
-export function resolveFeatured<T extends { id: string; data: { venueId: string } }>(events: T[], id: string | null, venueId: string) {
-  if (!id) return undefined;
-  const event = events.find((entry) => entry.id === id);
-  if (!event) throw new Error(`Featured event "${id}" does not exist.`);
-  if (event.data.venueId !== venueId) throw new Error(`Unknown venue "${event.data.venueId}" in featured event.`);
-  return event;
+/** Prefer the earliest upcoming/ongoing event; otherwise keep the latest past event. */
+export function resolveFeatured<T extends { id: string; data: EventTiming & { venueId: string } }>(
+  events: T[], venueId: string, timeZone = 'Asia/Yerevan', now = new Date(),
+): T | undefined {
+  const candidates = events.filter(entry => !entry.data.draft).map(entry => {
+    const timing = eventTimestamps(entry.data, timeZone);
+    if (!timing) throw new Error(`Published event "${entry.id}" requires a date and time range.`);
+    return { entry, start: Date.parse(timing.start), end: Date.parse(timing.end) };
+  }).sort((a, b) => a.start - b.start || a.entry.id.localeCompare(b.entry.id));
+  const selected = candidates.find(candidate => candidate.end > now.getTime())
+    ?? candidates.at(-1);
+  if (selected && selected.entry.data.venueId !== venueId) {
+    throw new Error(`Unknown venue "${selected.entry.data.venueId}" in featured event.`);
+  }
+  return selected?.entry;
 }

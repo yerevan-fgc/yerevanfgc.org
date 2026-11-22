@@ -30,17 +30,31 @@ test('event dates have localized weekday/day/month labels without year or timezo
   assert.equal(formatEventDate('2026-11-07', 'ru'), 'сб, 7 нояб.');
   assert.equal(formatEventDate('2027-01-01', 'en'), 'Fri, 1 Jan');
 });
-test('featured event selection is explicit and validates event/venue references', () => {
-  const entries = [{ id: 'meetup', data: { venueId: 'main' } }];
-  assert.equal(resolveFeatured(entries, 'meetup', 'main'), entries[0]);
-  assert.equal(resolveFeatured(entries, null, 'main'), undefined);
-  assert.throws(() => resolveFeatured(entries, 'missing', 'main'), /does not exist/);
-  assert.throws(() => resolveFeatured(entries, 'meetup', 'elsewhere'), /Unknown venue/);
+test('featured event selects upcoming or ongoing events, then falls back to latest past event', () => {
+  const entry = (id, date, draft = false) => ({ id, data: { draft, date, time: '15:00 – 20:00', venueId: 'main' } });
+  const past = entry('past', '2026-11-07');
+  const next = entry('next', '2026-12-05');
+  const later = entry('later', '2026-12-12');
+  const draft = entry('draft', '2026-11-23', true);
+  const entries = [later, draft, past, next];
+  const select = date => resolveFeatured(entries, 'main', 'Asia/Yerevan', new Date(date));
+  assert.equal(select('2026-11-22T12:00:00Z'), next);
+  assert.equal(select('2026-12-05T15:59:59Z'), next, 'Keep an ongoing event until its local end time');
+  assert.equal(select('2026-12-05T16:00:00Z'), later);
+  assert.equal(select('2027-01-01T00:00:00Z'), later);
+  assert.equal(resolveFeatured([], 'main'), undefined);
+  assert.equal(resolveFeatured([draft], 'main'), undefined);
+  assert.throws(() => resolveFeatured([next], 'elsewhere'), /Unknown venue/);
 });
 test('event schema validates date and 24-hour ranges, normalizing dash variants', () => {
   const text = { title: 'Lorem ipsum', tagline: 'Dolor sit amet.' };
   const data = { ...event, venueId: 'main', translations: { en: text, hy: text, ru: text } };
   assert.equal(eventSchema.safeParse(data).success, true);
+  for (const tagline of ['', '   ']) {
+    const blankText = { ...text, tagline };
+    const parsed = eventSchema.parse({ ...data, translations: { en: blankText, hy: blankText, ru: blankText } });
+    assert.equal(parsed.translations.en.tagline, '');
+  }
   for (const time of ['15:00 – 20:00', '15:00-20:00', '15:00 — 20:00']) {
     assert.equal(eventSchema.parse({ ...data, time }).time, '15:00 – 20:00');
   }
