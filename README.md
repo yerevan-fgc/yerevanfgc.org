@@ -43,7 +43,7 @@ Analytics is off by default. Set `analytics.measurementId` to a `G-…` ID and `
 
 ### Announce the next meetup
 
-1. Copy `src/content/events/sample-meetup.json` to a descriptive filename, e.g. `meetup-2027-01.json`. The filename is its stable ID.
+1. Copy an existing event, such as `src/content/events/2026-11-07-saturday-mash-69.json`, to a filename in `YYYY-MM-DD-event-title` format, e.g. `2027-01-09-saturday-mash-71.json`. Set `draft: true` while preparing it. The filename is its stable ID.
 2. Fill in `translations.en`, `.hy`, and `.ru`: title, tagline, and optional description. The timestamp and venue are shared, not copied across translations.
 3. Set `date` to `YYYY-MM-DD` (e.g. `2026-11-07`) and `time` to a same-day 24-hour range such as `15:00 – 20:00`. A plain hyphen is also accepted. Dates display as “Sat, 7 Nov” in English, with localized Armenian/Russian equivalents. Clock times are interpreted in the configured venue timezone (`Asia/Yerevan`), independent of the visitor’s timezone. End must follow start. Set `venueId` to the configured venue ID (`main` initially).
 4. Set `draft` to `false`. Optionally supply an `announcementUrl` and a `poster` URL or path under `public/`. Set `posterSize` to its intrinsic `{ "width": 400, "height": 560 }` (adjust for the real asset). The localized event title is used as the poster alt text. Posters link to the full image and are displayed without cropping. Published events require both date and time. A draft entry may leave them `null`.
@@ -122,3 +122,13 @@ Another paragraph with **emphasis** and [a section link](#faq).
 ```
 
 Keep the date quoted so it remains a string. Use blank lines between paragraphs, not escaped JSON newlines. Do not repeat the section/article title as a `#` heading in the body: About us has its own heading and news titles are rendered from frontmatter. Body subheadings can use `##` in About us and `####` within news. The official Astro Markdown processor renders rich text and uses a small HTML-tree transform for frontmatter media and external links. Markdown links to other sites open in a new tab with `noopener noreferrer`; internal paths and section links stay in the same tab. HTML is built statically; this adds no browser Markdown runtime.
+
+Event metadata: `eventStatus` defaults to `EventScheduled`; use `EventCancelled`, `EventPostponed`, or `EventRescheduled` when appropriate. Each translation may include `description`, which appears in the event block and structured data. The organizer is Yerevan FGC, taken from the site name and canonical URL. Offers and performers are intentionally omitted for casual meetups.
+
+### Event calendar
+
+`/events/`, `/hy/events/`, and `/ru/events/` show upcoming/ongoing events chronologically, followed by past events newest first. The boundary is the event end time in `site.timezone`. Dated draft events appear only in `npm run dev`; undated drafts are omitted until scheduled. Event status labels remain visible for cancelled, postponed, and rescheduled entries. Each row uses the translated title, optional poster, time, venue, and description. Individual event pages and reports are a later step; poster links open the full existing asset. Date grouping refreshes on build for production, as with homepage event selection.
+
+### Client-side navigation
+
+Astro ClientRouter enhances internal links while pages remain statically generated and directly accessible without JavaScript. The stage background is a persistent fixed layer, with the live CSS selection copied before document swaps. Page controls initialize through `onPageLoad` in `src/lib/page-lifecycle.ts`; return a cleanup function for observers and listeners on long-lived objects such as `window` and media queries. Navigation uses no page animation.

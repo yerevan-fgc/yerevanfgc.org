@@ -44,7 +44,7 @@ test('each language renders all stage choices with Esaka initially selected', as
 
 test('early restore reads storage safely and rejects stale selections before stylesheet load', async () => {
   const html = await readFile('dist/index.html', 'utf8');
-  const headScript = html.match(/<script[^>]*>([\s\S]*?localStorage\.getItem[\s\S]*?)<\/script>/)?.[1];
+  const headScript = [...html.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/g)].map(match => match[1]).find(script => script.includes('localStorage.getItem'));
   assert.ok(headScript);
   assert.ok(html.indexOf(headScript) < html.indexOf('rel="stylesheet"'));
   const entries = await backgrounds();

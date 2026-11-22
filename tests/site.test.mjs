@@ -8,7 +8,7 @@ import { site, locales, localePath } from '../src/config/site.ts';
 for (const locale of locales) {
   test(`${locale}: generated page has correct language, metadata, links and indexing policy`, async () => {
     const html = await readFile(`dist${localePath(locale)}index.html`, 'utf8');
-    assert.match(html, new RegExp(`<html lang="${locale}"`));
+    assert.match(html, new RegExp(`<html\\b[^>]*lang="${locale}"`));
     assert.equal((html.match(/<h1\b/g) ?? []).length, 1);
     assert.match(html, /<main\b/);
     assert.match(html, /name="description"/);

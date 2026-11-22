@@ -1,0 +1,9 @@
+---
+import CommunityPage from '../../../components/CommunityPage.astro';
+import type { Locale } from '../../../config/site';
+export function getStaticPaths() {
+  return ['hy', 'ru'].map(locale => ({ params: { locale }, props: { locale } }));
+}
+interface Props { locale: Locale }
+---
+<CommunityPage locale={Astro.props.locale} view="events" />

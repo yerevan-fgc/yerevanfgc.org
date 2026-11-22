@@ -3,14 +3,16 @@ import Link from './Link.astro';
 import { getCollection, getEntry, render } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import EventCard from './EventCard.astro';
+import EventList from './EventList.astro';
 import StageSelect from './StageSelect.astro';
 import NewsEntry from './NewsEntry.astro';
 import GifOfWeek from './GifOfWeek.astro';
 import { site, locales, localePath, type Locale } from '../config/site';
 import { languageNames, ui } from '../i18n/ui';
 import { resolveFeatured, eventTimestamps } from '../lib/events';
-interface Props { locale: Locale }
-const { locale } = Astro.props;
+interface Props { locale: Locale; view?: 'home' | 'events' }
+const { locale, view = 'home' } = Astro.props;
+const pagePath = view === 'events' ? 'events/' : '';
 const t = ui[locale];
 const page = await getEntry('pages', locale);
 if (!page) throw new Error(`Missing page content for ${locale}`);
@@ -24,25 +26,29 @@ const news = (await getCollection('news')).filter(entry => entry.data.locale ===
 const community = await getEntry('community', 'home');
 // Omit links to the news section when there are no published entries.
 const badges = community?.data.badges.filter(link => link.href !== '#news' || news.length > 0) ?? [];
-const nav = [['about', t.about], ...(news.length ? [['news', t.news]] : []), ['next-event', t.nextEvent], ['games', t.games], ['faq', t.faq], ['location', t.location]];
+const nav = view === 'events'
+  ? [['upcoming-events', t.upcomingEvents], ['past-events', t.pastEvents]]
+  : [['about', t.about], ...(news.length ? [['news', t.news]] : []), ['next-event', t.nextEvent], ['games', t.games], ['faq', t.faq], ['location', t.location]];
 const eventDates = event ? eventTimestamps(event.data, site.timezone) : undefined;
 const eventSchema = event && !event.data.draft && eventDates && site.venue.name && site.venue.address ? {
   '@context': 'https://schema.org', '@type': 'Event', name: event.data.translations[locale].title,
   description: event.data.translations[locale].description ?? event.data.translations[locale].tagline,
   startDate: eventDates.start, endDate: eventDates.end,
   eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+  eventStatus: `https://schema.org/${event.data.eventStatus}`,
+  organizer: { '@type': 'Organization', name: site.name, url: site.url },
   location: { '@type': 'Place', name: site.venue.name, address: site.venue.address },
   url: new URL(localePath(locale) + '#next-event', site.url).href,
   ...(event.data.poster ? { image: new URL(event.data.poster, site.url).href } : {}),
 } : undefined;
 ---
-<Layout locale={locale} title={copy.title} description={copy.description} eventSchema={eventSchema}>
+<Layout locale={locale} title={view === 'events' ? `${t.events} | ${site.name}` : copy.title} description={copy.description} eventSchema={view === 'home' ? eventSchema : undefined} pagePath={pagePath}>
   <div class="site-shell">
     <header class="masthead">
       <Link class="site-title" href={localePath(locale)} aria-label={`${site.name} · ${t.home}`}>{site.logo ? <img class="site-logo" src={site.logo.src} alt={site.name} width={site.logo.width} height={site.logo.height} /> : site.name}</Link>
       <p class="site-location">{t.tagline}</p>
       <nav class="languages" aria-label={t.languages}>
-        {locales.map(l => <Link href={localePath(l)} lang={l} hreflang={l} aria-current={l === locale ? 'page' : undefined} data-language-link>{languageNames[l]}</Link>)}
+        {locales.map(l => <Link href={localePath(l) + pagePath} lang={l} hreflang={l} aria-current={l === locale ? 'page' : undefined} data-language-link>{languageNames[l]}</Link>)}
       </nav>
       {!site.published[locale] && <p class="preview-bar">{t.preview}</p>}
     </header>
@@ -50,7 +56,11 @@ const eventSchema = event && !event.data.draft && eventDates && site.venue.name 
       <aside class="left-rail">
         <nav class="navigation" aria-label={t.navigation}>
           <h2>{t.navigation}</h2>
-          <ul>{nav.map(([id,label]) => <li><Link href={`#${id}`}>{label}</Link></li>)}</ul>
+          <ul class="navigation-pages">
+            <li><Link href={localePath(locale)} aria-current={view === 'home' ? 'page' : undefined}>{t.home}</Link></li>
+            <li><Link href={localePath(locale) + 'events/'} aria-current={view === 'events' ? 'page' : undefined}>{t.events}</Link></li>
+          </ul>
+          <ul class="navigation-sections">{nav.map(([id,label]) => <li><Link href={`#${id}`}>{label}</Link></li>)}</ul>
         </nav>
         <section class="community-links" aria-labelledby="updates-heading">
           <h2 id="updates-heading">{t.updates}</h2>
@@ -61,6 +71,7 @@ const eventSchema = event && !event.data.draft && eventDates && site.venue.name 
       </aside>
       <div class="content-column">
       <main id="main" class="main-column" tabindex="-1">
+        {view === 'events' ? <EventList locale={locale} /> : <>
         <section class="introduction" id="about" aria-labelledby="intro-heading">
           <h1 id="intro-heading">{t.about}</h1>
           <div class="markdown-body"><AboutContent /></div>
@@ -80,6 +91,7 @@ const eventSchema = event && !event.data.draft && eventDates && site.venue.name 
           {site.venue.directionsUrl && <p><Link href={site.venue.directionsUrl}>{t.directions}</Link></p>}
           {site.venue.mapEmbedUrl ? <iframe title={t.map} src={site.venue.mapEmbedUrl} loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe> : <p class="map-placeholder">{t.map} — {t.pending}</p>}
         </section>
+        </>}
       </main>
     <footer class="site-footer">
       {badges.length > 0 && <nav class="badge-links" aria-label={t.siteLinks}>{badges.map(badge => <Link href={badge.href}>{badge.label[locale]}</Link>)}</nav>}
@@ -104,15 +116,23 @@ const eventSchema = event && !event.data.draft && eventDates && site.venue.name 
   </div>
 </Layout>
 <script>
-  // Keep anchor destinations below the sticky mobile navigation, including translated labels.
-  const navigation = document.querySelector<HTMLElement>('.navigation');
-  if (navigation) {
-    const singleColumn = matchMedia('(max-width: 640px)');
-    const setNavigationOffset = () => document.documentElement.style.setProperty(
-      '--navigation-offset', singleColumn.matches ? `${navigation.getBoundingClientRect().height + 10}px` : '10px',
-    );
-    new ResizeObserver(setNavigationOffset).observe(navigation);
-    singleColumn.addEventListener('change', setNavigationOffset);
-    setNavigationOffset();
-  }
+  import { onPageLoad } from '../lib/page-lifecycle';
+  onPageLoad(() => {
+    // Keep anchor destinations below the sticky mobile navigation, including translated labels.
+    const navigation = document.querySelector<HTMLElement>('.navigation');
+    if (navigation) {
+      const singleColumn = matchMedia('(max-width: 640px)');
+      const setNavigationOffset = () => document.documentElement.style.setProperty(
+        '--navigation-offset', singleColumn.matches ? `${navigation.getBoundingClientRect().height + 10}px` : '10px',
+      );
+      const observer = new ResizeObserver(setNavigationOffset);
+      observer.observe(navigation);
+      singleColumn.addEventListener('change', setNavigationOffset);
+      setNavigationOffset();
+      return () => {
+        observer.disconnect();
+        singleColumn.removeEventListener('change', setNavigationOffset);
+      };
+    }
+  });
 </script>

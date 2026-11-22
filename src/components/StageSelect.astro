@@ -14,28 +14,39 @@ const backgrounds = (await getCollection('backgrounds')).sort((a, b) =>
 </section>
 <script>
   import { backgroundStorageKey, resolveBackground } from '../lib/backgrounds';
-  document.querySelectorAll<HTMLElement>('[data-stage-select]').forEach(picker => {
-    const buttons = [...picker.querySelectorAll<HTMLButtonElement>('[data-background]')];
-    const choices = buttons.map(button => button.dataset.background!);
-    const fallback = picker.dataset.default!;
-    const apply = (link: string) => {
-      document.documentElement.style.setProperty('--background-image', `url(${JSON.stringify(link)})`);
-      buttons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.background === link)));
-    };
-    const restore = () => {
-      let saved = null;
-      try { saved = localStorage.getItem(backgroundStorageKey); } catch {}
-      apply(resolveBackground(saved, choices, fallback));
-    };
-    restore();
-    buttons.forEach(button => button.addEventListener('click', () => {
-      const link = button.dataset.background!;
-      apply(link);
-      try { localStorage.setItem(backgroundStorageKey, link); } catch {}
-    }));
-    window.addEventListener('pageshow', restore);
-    window.addEventListener('storage', event => {
-      if (event.key === backgroundStorageKey || event.key === null) restore();
+  import { onPageLoad } from '../lib/page-lifecycle';
+  let activeBackground: string | null = null;
+  onPageLoad(() => {
+    const controller = new AbortController();
+    const { signal } = controller;
+    document.querySelectorAll<HTMLElement>('[data-stage-select]').forEach(picker => {
+      const buttons = [...picker.querySelectorAll<HTMLButtonElement>('[data-background]')];
+      const choices = buttons.map(button => button.dataset.background!);
+      const fallback = picker.dataset.default!;
+      const apply = (link: string) => {
+        activeBackground = link;
+        document.documentElement.style.setProperty('--background-image', `url(${JSON.stringify(link)})`);
+        buttons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.background === link)));
+      };
+      const restore = () => {
+        let saved = activeBackground;
+        try { saved = localStorage.getItem(backgroundStorageKey) ?? activeBackground; } catch {}
+        apply(resolveBackground(saved, choices, fallback));
+      };
+      restore();
+      buttons.forEach(button => button.addEventListener('click', () => {
+        const link = button.dataset.background!;
+        apply(link);
+        try { localStorage.setItem(backgroundStorageKey, link); } catch {}
+      }, { signal }));
+      window.addEventListener('pageshow', restore, { signal });
+      window.addEventListener('storage', event => {
+        if (event.key === backgroundStorageKey || event.key === null) {
+          activeBackground = event.newValue;
+          restore();
+        }
+      }, { signal });
     });
+    return () => controller.abort();
   });
 </script>

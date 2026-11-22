@@ -1,0 +1,40 @@
+---
+import { getCollection } from 'astro:content';
+import Link from './Link.astro';
+import { site, type Locale } from '../config/site';
+import { ui } from '../i18n/ui';
+import { groupEvents } from '../lib/events';
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const t = ui[locale];
+const { upcoming, past } = groupEvents(await getCollection('events'), import.meta.env.DEV, site.timezone);
+const groups = [
+  { id: 'upcoming-events', title: t.upcomingEvents, entries: upcoming, empty: t.noUpcomingEvents },
+  { id: 'past-events', title: t.pastEvents, entries: past, empty: t.noPastEvents },
+];
+const statuses = { EventCancelled: t.cancelled, EventPostponed: t.postponed, EventRescheduled: t.rescheduled };
+const formatDate = (date: string) => new Intl.DateTimeFormat(locale === 'en' ? 'en-GB' : locale, {
+  day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC',
+}).format(new Date(`${date}T12:00:00Z`));
+---
+<section class="events-introduction"><h1>{t.events}</h1></section>
+{groups.map(group => <section class="events-group" aria-labelledby={group.id}>
+  <h2 id={group.id}>{group.title}</h2>
+  {group.entries.length ? <ol class="event-list">{group.entries.map(({ id, data }) => {
+    const text = data.translations[locale];
+    const status = data.eventStatus === 'EventScheduled' ? undefined : statuses[data.eventStatus];
+    return <li class:list={['event-list-entry', { 'has-poster': !!data.poster }]} id={`event-${id}`}>
+      <time datetime={data.date!}>{formatDate(data.date!)}</time>
+      <div class="event-list-copy">
+        <h3>{text.title}</h3>
+        {data.draft && <small class="event-list-status">{t.preview}</small>}
+        {status && <strong class="event-list-status">{status}</strong>}
+        <p class="event-list-facts">{data.time} · {site.venue.name}</p>
+        {text.tagline && <p>{text.tagline}</p>}
+        {text.description && <p>{text.description}</p>}
+        {data.announcementUrl && <p><Link href={data.announcementUrl}>{t.announcement}</Link></p>}
+      </div>
+        {data.poster && <Link class="event-list-poster" href={data.poster}><img src={data.poster} alt={text.title} width={data.posterSize?.width} height={data.posterSize?.height} loading="lazy" /></Link>}
+    </li>;
+  })}</ol> : <p>{group.empty}{group.id === 'upcoming-events' && site.twitterUrl && <> <Link href={site.twitterUrl}>{t.twitter}</Link></>}</p>}
+</section>)}

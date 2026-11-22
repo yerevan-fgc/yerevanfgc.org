@@ -52,3 +52,18 @@ export function resolveFeatured<T extends { id: string; data: EventTiming & { ve
   }
   return selected?.entry;
 }
+
+/** Divide dated entries at their venue-local end time without changing collection order. */
+export function groupEvents<T extends { id: string; data: EventTiming }>(
+  entries: T[], includeDrafts = false, timeZone = 'Asia/Yerevan', now = new Date(),
+) {
+  const dated = entries.filter(entry => includeDrafts || !entry.data.draft).flatMap(entry => {
+    const timing = eventTimestamps(entry.data, timeZone);
+    return timing ? [{ entry, start: Date.parse(timing.start), end: Date.parse(timing.end) }] : [];
+  });
+  const chronological = (a: typeof dated[number], b: typeof dated[number]) => a.start - b.start || a.entry.id.localeCompare(b.entry.id);
+  return {
+    upcoming: dated.filter(item => item.end > now.getTime()).sort(chronological).map(item => item.entry),
+    past: dated.filter(item => item.end <= now.getTime()).sort((a, b) => chronological(b, a)).map(item => item.entry),
+  };
+}

@@ -1,23 +1,25 @@
 ---
 import Link from '../components/Link.astro';
+import { ClientRouter } from 'astro:transitions';
 import { getCollection } from 'astro:content';
 import { site, locales, localePath, type Locale } from '../config/site';
 import { ui } from '../i18n/ui';
 import '../styles/global.css';
 import { backgroundStorageKey } from '../lib/backgrounds';
-interface Props { locale: Locale; title: string; description: string; eventSchema?: Record<string, unknown> }
-const { locale, title, description, eventSchema } = Astro.props;
+interface Props { locale: Locale; title: string; description: string; eventSchema?: Record<string, unknown>; pagePath?: string }
+const { locale, title, description, eventSchema, pagePath = '' } = Astro.props;
 const published = site.published[locale];
 const twitterUsername = site.twitterUrl ? new URL(site.twitterUrl).pathname.split('/').filter(Boolean)[0] : undefined;
 const backgroundLinks = (await getCollection('backgrounds')).map(entry => entry.data.link);
 if (!backgroundLinks.includes(site.defaultBackground)) throw new Error('Default background is missing from the backgrounds collection.');
-const canonical = new URL(localePath(locale), site.url).href;
+const canonical = new URL(localePath(locale) + pagePath, site.url).href;
 const analyticsId = import.meta.env.PROD && site.analytics.enabled && site.analytics.measurementId;
 if (analyticsId && !/^G-[A-Z0-9]+$/.test(analyticsId)) throw new Error('Invalid Google Analytics measurement ID.');
 ---
 <!doctype html>
-<html lang={locale} style={`--background-image: url(${JSON.stringify(site.defaultBackground)})`}>
+<html transition:animate="none" lang={locale} style={`--background-image: url(${JSON.stringify(site.defaultBackground)})`}>
   <head>
+    <ClientRouter fallback="swap" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script is:inline define:vars={{ backgroundLinks, backgroundStorageKey }}>
@@ -33,8 +35,8 @@ if (analyticsId && !/^G-[A-Z0-9]+$/.test(analyticsId)) throw new Error('Invalid 
     <meta name="robots" content={published ? 'index, follow' : 'noindex, follow'} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="canonical" href={canonical} />
-    {published && locales.filter(l => site.published[l]).map(l => <link rel="alternate" hreflang={l} href={new URL(localePath(l), site.url).href} />)}
-    {published && site.published.en && <link rel="alternate" hreflang="x-default" href={new URL('/', site.url).href} />}
+    {published && locales.filter(l => site.published[l]).map(l => <link rel="alternate" hreflang={l} href={new URL(localePath(l) + pagePath, site.url).href} />)}
+    {published && site.published.en && <link rel="alternate" hreflang="x-default" href={new URL('/' + pagePath, site.url).href} />}
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={site.name} />
     <meta property="og:title" content={title} />
@@ -52,7 +54,18 @@ if (analyticsId && !/^G-[A-Z0-9]+$/.test(analyticsId)) throw new Error('Invalid 
     </script>}
   </head>
   <body id="top">
+    <div class="site-background" aria-hidden="true" transition:persist="stage-background"></div>
     <Link class="skip-link" href="#main">{ui[locale].skip}</Link>
     <slot />
   </body>
 </html>
+
+<script>
+  // Carry the live stage through root-attribute replacement, even if storage is blocked.
+  document.addEventListener('astro:before-swap', event => {
+    for (const property of ['--background-image', '--navigation-offset']) {
+      const value = document.documentElement.style.getPropertyValue(property);
+      if (value) event.newDocument.documentElement.style.setProperty(property, value);
+    }
+  });
+</script>

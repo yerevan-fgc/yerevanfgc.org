@@ -21,5 +21,6 @@
     "height": 560
   },
   "date": "2026-12-05",
-  "time": "15:00 – 20:00"
+  "time": "15:00 – 20:00",
+  "eventStatus": "EventScheduled"
 }
