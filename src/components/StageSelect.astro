@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import { site, type Locale } from '../config/site';
 import { ui } from '../i18n/ui';
+import { palettes, defaultPalette } from '../config/palettes';
 interface Props { locale: Locale }
 const { locale } = Astro.props;
 const backgrounds = (await getCollection('backgrounds')).sort((a, b) =>
@@ -10,16 +11,43 @@ const backgrounds = (await getCollection('backgrounds')).sort((a, b) =>
 ---
 <section class="stage-select" aria-labelledby="stage-heading" data-stage-select data-default={site.defaultBackground}>
   <h2 id="stage-heading">{ui[locale].stageSelect}</h2>
-  <ul>{backgrounds.map(({ data }) => <li><button class="stage-choice" type="button" data-background={data.link} aria-pressed={data.link === site.defaultBackground}>{data.name}</button></li>)}</ul>
+  <ul class="stage-backgrounds">{backgrounds.map(({ data }) => <li><button class="stage-choice" type="button" data-background={data.link} aria-pressed={data.link === site.defaultBackground}>{data.name}</button></li>)}</ul>
+  <ul class="stage-palettes">{Object.entries(palettes).map(([id, palette]) => <li><button class="stage-choice" type="button" data-palette={id} aria-pressed={id === defaultPalette}>{palette.name}</button></li>)}</ul>
 </section>
 <script>
   import { backgroundStorageKey, resolveBackground } from '../lib/backgrounds';
   import { onPageLoad } from '../lib/page-lifecycle';
+  import { defaultPalette, paletteStorageKey, type PaletteId } from '../config/palettes';
+  import { applyPalette, resolvePalette } from '../lib/palettes';
   let activeBackground: string | null = null;
+  let activePalette: PaletteId = defaultPalette;
   onPageLoad(() => {
     const controller = new AbortController();
     const { signal } = controller;
     document.querySelectorAll<HTMLElement>('[data-stage-select]').forEach(picker => {
+      const paletteButtons = [...picker.querySelectorAll<HTMLButtonElement>('[data-palette]')];
+      const selectPalette = (value: string | null) => {
+        activePalette = resolvePalette(value);
+        applyPalette(document.documentElement, activePalette);
+        paletteButtons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.palette === activePalette)));
+      };
+      const restorePalette = () => {
+        let saved: string | null = activePalette;
+        try { saved = localStorage.getItem(paletteStorageKey) ?? activePalette; } catch {}
+        selectPalette(saved);
+      };
+      restorePalette();
+      paletteButtons.forEach(button => button.addEventListener('click', () => {
+        selectPalette(button.dataset.palette!);
+        try { localStorage.setItem(paletteStorageKey, activePalette); } catch {}
+      }, { signal }));
+      window.addEventListener('pageshow', restorePalette, { signal });
+      window.addEventListener('storage', event => {
+        if (event.key === paletteStorageKey || event.key === null) {
+          activePalette = resolvePalette(event.newValue);
+          restorePalette();
+        }
+      }, { signal });
       const buttons = [...picker.querySelectorAll<HTMLButtonElement>('[data-background]')];
       const choices = buttons.map(button => button.dataset.background!);
       const fallback = picker.dataset.default!;

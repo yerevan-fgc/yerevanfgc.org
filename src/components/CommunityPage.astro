@@ -45,12 +45,16 @@ const eventSchema = event && !event.data.draft && eventDates && site.venue.name 
 <Layout locale={locale} title={view === 'events' ? `${t.events} | ${site.name}` : copy.title} description={copy.description} eventSchema={view === 'home' ? eventSchema : undefined} pagePath={pagePath}>
   <div class="site-shell">
     <header class="masthead">
+      <div class="masthead-banner">
       <Link class="site-title" href={localePath(locale)} aria-label={`${site.name} · ${t.home}`}>{site.logo ? <img class="site-logo" src={site.logo.src} alt={site.name} width={site.logo.width} height={site.logo.height} /> : site.name}</Link>
+      </div>
+      <div class="masthead-meta">
       <p class="site-location">{t.tagline}</p>
       <nav class="languages" aria-label={t.languages}>
         {locales.map(l => <Link href={localePath(l) + pagePath} lang={l} hreflang={l} aria-current={l === locale ? 'page' : undefined} data-language-link>{languageNames[l]}</Link>)}
       </nav>
       {!site.published[locale] && <p class="preview-bar">{t.preview}</p>}
+      </div>
     </header>
     <div class="board">
       <aside class="left-rail">

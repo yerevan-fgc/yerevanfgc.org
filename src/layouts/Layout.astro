@@ -6,9 +6,12 @@ import { site, locales, localePath, type Locale } from '../config/site';
 import { ui } from '../i18n/ui';
 import '../styles/global.css';
 import { backgroundStorageKey } from '../lib/backgrounds';
+import { palettes, defaultPalette, paletteStorageKey } from '../config/palettes';
 interface Props { locale: Locale; title: string; description: string; eventSchema?: Record<string, unknown>; pagePath?: string }
 const { locale, title, description, eventSchema, pagePath = '' } = Astro.props;
 const published = site.published[locale];
+const paletteTokens = Object.fromEntries(Object.entries(palettes).map(([id, palette]) => [id, palette.tokens]));
+const defaultColors = Object.entries(palettes[defaultPalette].tokens).map(([key, value]) => `${key}: ${value}`).join(';');
 const twitterUsername = site.twitterUrl ? new URL(site.twitterUrl).pathname.split('/').filter(Boolean)[0] : undefined;
 const backgroundLinks = (await getCollection('backgrounds')).map(entry => entry.data.link);
 if (!backgroundLinks.includes(site.defaultBackground)) throw new Error('Default background is missing from the backgrounds collection.');
@@ -17,7 +20,7 @@ const analyticsId = import.meta.env.PROD && site.analytics.enabled && site.analy
 if (analyticsId && !/^G-[A-Z0-9]+$/.test(analyticsId)) throw new Error('Invalid Google Analytics measurement ID.');
 ---
 <!doctype html>
-<html transition:animate="none" lang={locale} style={`--background-image: url(${JSON.stringify(site.defaultBackground)})`}>
+<html transition:animate="none" lang={locale} data-palette={defaultPalette} style={`--background-image: url(${JSON.stringify(site.defaultBackground)});${defaultColors}`}>
   <head>
     <ClientRouter fallback="swap" />
     <meta charset="utf-8" />
@@ -27,6 +30,16 @@ if (analyticsId && !/^G-[A-Z0-9]+$/.test(analyticsId)) throw new Error('Invalid 
       try {
         const saved = localStorage.getItem(backgroundStorageKey);
         if (backgroundLinks.includes(saved)) document.documentElement.style.setProperty('--background-image', `url(${JSON.stringify(saved)})`);
+      } catch {}
+    </script>
+    <script is:inline define:vars={{ paletteTokens, paletteStorageKey }}>
+      // Restore colour choice before the first paint; invalid values keep the blue default.
+      try {
+        const saved = localStorage.getItem(paletteStorageKey);
+        if (saved && Object.hasOwn(paletteTokens, saved)) {
+          document.documentElement.dataset.palette = saved;
+          Object.entries(paletteTokens[saved]).forEach(([key, value]) => document.documentElement.style.setProperty(key, value));
+        }
       } catch {}
     </script>
     <meta name="theme-color" content="#0c0d11" />
@@ -61,8 +74,10 @@ if (analyticsId && !/^G-[A-Z0-9]+$/.test(analyticsId)) throw new Error('Invalid 
 </html>
 
 <script>
+  import { applyPalette, resolvePalette } from '../lib/palettes';
   // Carry the live stage through root-attribute replacement, even if storage is blocked.
   document.addEventListener('astro:before-swap', event => {
+    applyPalette(event.newDocument.documentElement, resolvePalette(document.documentElement.dataset.palette));
     for (const property of ['--background-image', '--navigation-offset']) {
       const value = document.documentElement.style.getPropertyValue(property);
       if (value) event.newDocument.documentElement.style.setProperty(property, value);

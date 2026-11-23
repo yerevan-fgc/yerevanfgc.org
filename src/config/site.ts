@@ -6,7 +6,7 @@ export const localePath = (locale: Locale) =>
 // Public configuration only. Do not put secrets in this file.
 export const site = {
   name: "Yerevan FGC",
-  logo: null as { src: string; width: number; height: number } | null,
+  logo: { src: "/ui/yerevan-fgc.png", width: 858, height: 84 } as { src: string; width: number; height: number } | null,
   url: "https://yerevanfgc.org",
   timezone: "Asia/Yerevan",
   twitterUrl: "https://x.com/YerevanFGC",

@@ -132,3 +132,9 @@ Event metadata: `eventStatus` defaults to `EventScheduled`; use `EventCancelled`
 ### Client-side navigation
 
 Astro ClientRouter enhances internal links while pages remain statically generated and directly accessible without JavaScript. The stage background is a persistent fixed layer, with the live CSS selection copied before document swaps. Page controls initialize through `onPageLoad` in `src/lib/page-lifecycle.ts`; return a cleanup function for observers and listeners on long-lived objects such as `window` and media queries. Navigation uses no page animation.
+
+The masthead wordmark is `public/ui/yerevan-fgc.png`, a transparent 858×84 PNG rendered from Bungee Spice and displayed at up to 429px wide. Its font license is retained in `public/ui/yerevan-fgc-LICENSE.txt`; the font itself is no longer shipped. Runtime typography uses only Golos Text and Noto Sans Armenian, each at weights 400 and 700 (four font files total). The left navigation, socials, and stage selector share a faint grid surface.
+
+### Colour schemes
+
+Stage select offers two hardcoded palettes: Dream Match (the default) and Satsui no Hado (charcoal/burgundy). A dotted divider separates palettes from stage backgrounds. `src/config/palettes.ts` holds their names, colour tokens, and default. Palette and background choices are independent, persist in local storage, and restore before first paint and across ClientRouter navigation. Invalid or removed palette IDs fall back to Dream Match. Contrast tests cover text and links on opaque reading surfaces.
