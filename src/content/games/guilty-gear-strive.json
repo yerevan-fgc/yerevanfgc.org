@@ -2,5 +2,6 @@
   "order": 6,
   "name": "Guilty Gear Strive",
   "logo": "/games/ggst.png",
-  "link": null
+  "link": null,
+  "logoOffsetY": 3
 }

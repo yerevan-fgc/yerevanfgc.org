@@ -2,5 +2,6 @@
   "order": 2,
   "name": "Avatar Legends: The Fighting Game",
   "logo": "/games/avatar.png",
-  "link": null
+  "link": null,
+  "logoOffsetY": 0
 }

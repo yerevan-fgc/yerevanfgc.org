@@ -109,7 +109,7 @@ const eventSchema = event && !event.data.draft && eventDates && site.venue.name 
           <ul class="games-list">{games.map(({ data }) => {
             const Tag = data.link ? Link : 'span';
             return <li><Tag class="game-entry" href={data.link ?? undefined}>
-              {data.logo ? <img class="game-logo" src={data.logo} alt={data.name} width="228" height="124" loading="lazy" /> : data.name}
+              {data.logo ? <img class="game-logo" style={data.logoOffsetY ? `--logo-offset-y: ${data.logoOffsetY}%` : undefined} src={data.logo} alt={data.name} width="228" height="124" loading="lazy" /> : data.name}
             </Tag></li>;
           })}</ul>
         </section>

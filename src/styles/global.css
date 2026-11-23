@@ -341,7 +341,8 @@ section {
 }
 /* A few compact graphic controls, separate from ordinary document links. */
 .social-link,
-.site-footer [data-back-top] {
+.site-footer [data-back-top],
+.gif-motion-toggle {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -361,18 +362,21 @@ section {
   color: var(--link);
 }
 .social-link:hover,
-.site-footer [data-back-top]:hover {
+.site-footer [data-back-top]:hover,
+.gif-motion-toggle:hover {
   color: var(--hover);
   border-top-color: var(--accent-bright);
   border-left-color: var(--accent-bright);
 }
 .social-link:active,
-.site-footer [data-back-top]:active {
+.site-footer [data-back-top]:active,
+.gif-motion-toggle:active {
   border-color: var(--rule) var(--edge-light) var(--edge-light) var(--rule);
   background: var(--paper);
 }
 .social-link:focus-visible,
-.site-footer [data-back-top]:focus-visible {
+.site-footer [data-back-top]:focus-visible,
+.gif-motion-toggle:focus-visible {
   outline: 2px solid var(--accent-bright);
   outline-offset: 2px;
 }
@@ -498,6 +502,7 @@ img.pixel-art {
 .game-logo {
   width: 100%;
   height: auto;
+  transform: translateY(var(--logo-offset-y, 0%));
 }
 .main-column hr {
   position: relative;
@@ -701,7 +706,7 @@ address {
 .gif-week h2 {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 5px;
   text-align: left;
@@ -733,13 +738,13 @@ address {
   max-width: 100%;
 }
 .gif-motion-toggle {
-  padding: 0;
-  border: 0;
-  background: none;
-  color: var(--link);
-  font: 12px var(--font-body);
-  text-decoration: underline;
+  padding: 2px 5px;
+  font-family: var(--font-body);
+  font-size: 12px;
   cursor: pointer;
+}
+.gif-motion-toggle[hidden] {
+  display: none;
 }
 .badge-links {
   display: flex;

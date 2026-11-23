@@ -19,6 +19,8 @@ const games = defineCollection({
     order: z.number(),
     name: z.string().min(1),
     logo: z.string().min(1).nullable().default(null),
+    // Percentage of logo height; optical alignment without changing the image file.
+    logoOffsetY: z.number().min(-25).max(25).default(0),
     link: z.url({ protocol: /^https?$/ }).nullable().default(null),
   }),
 });
